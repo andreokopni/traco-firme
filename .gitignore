@@ -1,0 +1,16 @@
+# Ambiente Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+build/
+dist/
+*.egg-info/
+
+# Editores
+.vscode/
+.idea/
+
+# Arquivos de trabalho (não versionar desenhos e exportações de teste)
+*.traco
+*.jsonl
