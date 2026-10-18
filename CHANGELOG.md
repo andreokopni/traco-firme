@@ -1,5 +1,12 @@
 # Histórico de versões
 
+## Próxima versão
+
+### Novidades
+- **Tema claro e escuro** em *Exibir › Tema da interface* (Igual ao Windows, Claro ou
+  Escuro). Só a interface muda de cor: a folha continua branca. A escolha fica salva.
+- Requer PySide6 6.8 ou mais novo (o `run.bat` atualiza sozinho).
+
 ## 0.2.0
 
 ### Novidades

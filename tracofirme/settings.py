@@ -28,6 +28,7 @@ class Settings:
     eraser_mode: str = "partial"   # "partial" | "stroke"
     sketch_opacity: float = 0.35
     input_backend: str = "ink"     # "ink" | "wintab"
+    theme: str = "system"          # "system" | "light" | "dark" (só a interface; o papel é sempre branco)
 
     def cord_px(self):
         """Comprimento da corda do estabilizador, em px de tela."""

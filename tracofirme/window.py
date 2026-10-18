@@ -8,7 +8,7 @@ from PySide6 import __version__ as PYSIDE_VERSION
 from PySide6.QtCore import QSettings, QSize, Qt, QTimer, qVersion
 from PySide6.QtGui import QAction, QActionGroup, QImage, QKeySequence
 from PySide6.QtWidgets import (
-    QButtonGroup, QDialog, QFileDialog, QHBoxLayout, QLabel, QMainWindow, QMessageBox, QProgressBar,
+    QApplication, QButtonGroup, QDialog, QFileDialog, QHBoxLayout, QLabel, QMainWindow, QMessageBox, QProgressBar,
     QPushButton, QRadioButton, QScrollArea, QSizePolicy, QToolBar, QToolButton, QVBoxLayout, QWidget,
 )
 
@@ -25,6 +25,7 @@ from .wintab import WinTabInput
 
 PROJECT_FILTER = "Projeto Traço Firme (*.traco)"
 APP_NAME = "Traço Firme"
+THEMES = {"system": Qt.ColorScheme.Unknown, "light": Qt.ColorScheme.Light, "dark": Qt.ColorScheme.Dark}
 
 STYLE = """
 QFrame#section { border: 1px solid palette(midlight); border-radius: 8px; }
@@ -50,6 +51,8 @@ class MainWindow(QMainWindow):
         self._first_show = True
         self._tablet_dialog = None
         self.setStyleSheet(STYLE)
+        self.apply_theme(self.settings.theme)
+        QApplication.styleHints().colorSchemeChanged.connect(lambda _: QTimer.singleShot(0, self._refresh_theme))
 
         self._build_actions()
         self._build_toolbar()
@@ -71,6 +74,7 @@ class MainWindow(QMainWindow):
         a = QAction(text, self)
         if icon_name:
             a.setIcon(icon(icon_name))
+            a.setProperty("icon_name", icon_name)  # para redesenhar o ícone quando o tema muda
         if shortcut is not None:
             a.setShortcuts(shortcut if isinstance(shortcut, list) else [shortcut])
         if tip:
@@ -128,7 +132,7 @@ class MainWindow(QMainWindow):
         spacer.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         tb.addWidget(spacer)
         tb.addAction(self.a_help)
-        export = QToolButton()
+        export = self.export_button = QToolButton()
         export.setDefaultAction(self.a_export)
         export.setObjectName("primary")
         export.setIcon(icon("export", color=Qt.GlobalColor.white))
@@ -170,6 +174,16 @@ class MainWindow(QMainWindow):
         m.addAction(self._act("Girar para a esquerda", lambda: self.canvas.rotate_by(-15), K("4")))
         m.addAction(self._act("Girar para a direita", lambda: self.canvas.rotate_by(15), K("6")))
         m.addAction(self._act("Desfazer o giro", self.canvas.reset_rotation, K("5")))
+        m.addSeparator()
+        themes = m.addMenu("Tema da interface")
+        group = QActionGroup(self)
+        self.theme_actions = {}
+        for key, text in (("system", "Igual ao Windows"), ("light", "Claro"), ("dark", "Escuro")):
+            a = themes.addAction(text, lambda k=key: self.apply_theme(k))
+            a.setCheckable(True)
+            a.setChecked(key == self.settings.theme)
+            group.addAction(a)
+            self.theme_actions[key] = a
 
         m = mb.addMenu("Aj&uda")
         m.addAction(self.a_help)
@@ -351,6 +365,28 @@ class MainWindow(QMainWindow):
         self.sketch_opacity.setVisible(loaded)
         self.sketch_remove.setVisible(loaded)
         self.sketch_load.setText("Trocar imagem…" if loaded else "Carregar imagem…")
+
+    # --- Tema ------------------------------------------------------------------------
+
+    def apply_theme(self, theme):
+        """Troca as cores da interface. A folha continua branca em qualquer tema."""
+        if theme not in THEMES:
+            theme = "system"
+        self.settings.theme = theme
+        if hasattr(self, "theme_actions"):
+            self.theme_actions[theme].setChecked(True)
+        QApplication.styleHints().setColorScheme(THEMES[theme])
+
+    def _refresh_theme(self):
+        # Os ícones são pintados na cor do texto e o STYLE usa palette(): refaz os dois.
+        for a in self.findChildren(QAction):
+            name = a.property("icon_name")
+            if name:
+                a.setIcon(icon(name))
+        self.export_button.setIcon(icon("export", color=Qt.GlobalColor.white))
+        self.setStyleSheet("")
+        self.setStyleSheet(STYLE)
+        self.canvas.update()
 
     # --- Mesa digitalizadora ----------------------------------------------------------
 

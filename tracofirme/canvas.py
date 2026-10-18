@@ -5,7 +5,7 @@ import math
 import time
 
 from PySide6.QtCore import QEvent, QPointF, QRectF, Qt, QTimer, Signal
-from PySide6.QtGui import QColor, QFont, QImage, QPainter, QPainterPath, QPen, QPointingDevice, QTransform
+from PySide6.QtGui import QColor, QFont, QGuiApplication, QImage, QPainter, QPainterPath, QPen, QPointingDevice, QTransform
 from PySide6.QtWidgets import QWidget
 
 from . import geometry as geo
@@ -15,7 +15,8 @@ from .document import Stroke
 from .filters import for_strength
 from .render import points_path, stroke_path
 
-BG = QColor("#3a3a3a")
+BG_DARK = QColor("#3a3a3a")   # mesa em volta da folha, conforme o tema da interface
+BG_LIGHT = QColor("#c9c9c9")
 PAPER = QColor("#ffffff")
 HOLD_MOVE_TOL = 8.0       # px de tela que ainda contam como "caneta parada"
 HOLD_RING_DELAY = 0.15    # s parado antes de mostrar o anel de progresso
@@ -603,7 +604,8 @@ class Canvas(QWidget):
 
     def paintEvent(self, event):
         p = QPainter(self)
-        p.fillRect(self.rect(), BG)
+        dark = QGuiApplication.styleHints().colorScheme() == Qt.ColorScheme.Dark
+        p.fillRect(self.rect(), BG_DARK if dark else BG_LIGHT)
         v = self.view()
         if not self._cache_ok or self._cache is None:
             self._render_cache()
