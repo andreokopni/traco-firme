@@ -45,7 +45,10 @@ Com essa janela aberta, encoste a caneta na folha; a barra de pressão deve acom
 Clique em **Exportar para o Krita** (Ctrl+E). Saem dois arquivos com o mesmo nome:
 
 - **`nome.png`**: as linhas com fundo transparente, no tamanho da folha e com o DPI gravado.
-  Abra no Krita (ou use *Camada → Importar*) e pinte numa camada por baixo.
+  Abra no Krita (ou use *Camada → Importar*) e pinte numa camada por baixo. Ao arrastar o
+  PNG para um desenho aberto, escolha **Inserir como nova camada**: uma *camada de arquivo*
+  não aceita pintura (se já criou uma, clique com o botão direito nela → *Converter → Converter
+  em camada de pintura*).
 - **`nome.svg`**: as mesmas linhas em vetor (curvas Bézier). No Krita, *Camada →
   Importar/Exportar → Importar camada…* cria uma camada vetorial editável que encaixa
   exatamente sobre o PNG, desde que o documento do Krita tenha o mesmo DPI (300 por padrão).

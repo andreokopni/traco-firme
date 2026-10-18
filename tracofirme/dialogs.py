@@ -202,7 +202,9 @@ traço ficar confortável para o seu pulso.</p>
 
 <h3>🎨 Levar para o Krita</h3>
 <p>Clique em <b>Exportar para o Krita</b>. Saem dois arquivos: um <b>PNG</b> com fundo transparente
-(abra no Krita e pinte por baixo) e um <b>SVG</b> com as linhas em vetor. Com <i>Fechar falhas entre
+(abra no Krita e pinte por baixo) e um <b>SVG</b> com as linhas em vetor. Se arrastar o PNG para
+um desenho já aberto, escolha <b>Inserir como nova camada</b>: uma <i>camada de arquivo</i> não aceita
+pintura. Com <i>Fechar falhas entre
 linhas</i> ligado, o balde de tinta do Krita não vaza pelas emendas.</p>
 
 <h3>⌨️ Atalhos</h3>

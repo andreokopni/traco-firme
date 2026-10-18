@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from PySide6.QtCore import QPointF, Qt
-from PySide6.QtGui import QColor, QImage, QPainter, QPainterPath, QPolygonF
+from PySide6.QtGui import QColor, QColorSpace, QImage, QPainter, QPainterPath, QPolygonF
 
 from . import geometry as geo
 from .curvefit import fit_closed
@@ -39,6 +39,8 @@ def export_png(doc, path):
     dpm = round(doc.dpi / 0.0254)
     img.setDotsPerMeterX(dpm)
     img.setDotsPerMeterY(dpm)
+    # Marca o PNG como sRGB (chunk sRGB/iCCP): sem isso o Krita tem de adivinhar o perfil.
+    img.setColorSpace(QColorSpace(QColorSpace.NamedColorSpace.SRgb))
     p = QPainter(img)
     p.setRenderHint(QPainter.RenderHint.Antialiasing)
     p.setPen(Qt.PenStyle.NoPen)
